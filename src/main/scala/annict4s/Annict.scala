@@ -3,7 +3,8 @@ package annict4s
 import httpz._
 import scalaz.{Inject, Free}
 
-object Annict4s {
+object Annict4s extends Annict[Command, Free[Command, ?]] {
+  override protected[this] def f[A](c: Command[A]) = lift(c)
 }
 
 object Annict extends Annict[Command, Action] {
@@ -36,7 +37,7 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     sort_id             : String = "desc",
     sort_season         : String = "desc",
     sort_watchers_count : String = "desc"
-  )(implicit token: String) =
+  )(implicit token: String): G[Works] =
     f(Command.Works(field, filter_ids, filter_season, filter_title,
       page, per_page, sort_id, sort_season, sort_watchers_count)(token))
 }

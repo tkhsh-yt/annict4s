@@ -6,8 +6,8 @@ case class Work(
   title_kana        : String,
   media             : String,
   media_text        : String,
-  season_name       : String,
-  season_name_text  : String,
+  season_name       : Option[String],
+  season_name_text  : Option[String],
   released_on       : String,
   released_on_about : String,
   official_site_url : String,
@@ -40,10 +40,11 @@ object Work {
       )
 
     case class Twitter(
-      mini_avatar_url   : String,
-      normal_avatar_url : String,
-      bigger_avatar_url : String,
-      original_url      : String
+      image_url          : String,
+      mini_avatar_url    : String,
+      normal_avatar_url  : String,
+      bigger_avatar_url  : String,
+      original_avatar_url: String
     ) extends JsonToString[Twitter]
 
     case class Facebook(
@@ -53,9 +54,9 @@ object Work {
     object Twitter {
 
       implicit val twitterCodecJson: CodecJson[Twitter] =
-        CodecJson.casecodec4(apply, unapply)(
-          "mini_avatar_url", "normal_avatar_url",
-          "bigger_avatar_url", "original_url"
+        CodecJson.casecodec5(apply, unapply)(
+          "image_url", "mini_avatar_url", "normal_avatar_url",
+          "bigger_avatar_url", "original_avatar_url"
         )
 
     }

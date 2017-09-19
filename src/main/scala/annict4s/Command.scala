@@ -51,7 +51,7 @@ object Command {
     sort_id             : String = "desc",
     sort_season         : String = "desc",
     sort_watchers_count : String = "desc"
-  )(implicit token: String) extends Command[List[annict4s.Work]](
+  )(implicit token: String) extends Command[annict4s.Works](
     get("/v1/works", Request.params(
       ("field"              , field.mkString(",")),
       ("filter_ids"         , filter_ids.mkString(",")),
