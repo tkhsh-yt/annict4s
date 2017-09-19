@@ -37,7 +37,7 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     sort_id             : String = "desc",
     sort_season         : String = "desc",
     sort_watchers_count : String = "desc"
-  )(implicit token: String): G[Works] =
+  )(implicit accessToken: AccessToken): G[Works] =
     f(Command.Works(field, filter_ids, filter_season, filter_title,
-      page, per_page, sort_id, sort_season, sort_watchers_count)(token))
+      page, per_page, sort_id, sort_season, sort_watchers_count)(accessToken))
 }
