@@ -1,24 +1,24 @@
 package annict4s
 
 case class Work(
-  id                : Long,
-  title             : String,
-  title_kana        : String,
-  media             : String,
-  media_text        : String,
+  id                : Option[Long],
+  title             : Option[String],
+  title_kana        : Option[String],
+  media             : Option[String],
+  media_text        : Option[String],
   season_name       : Option[String],
   season_name_text  : Option[String],
-  released_on       : String,
-  released_on_about : String,
-  official_site_url : String,
-  wikipedia_url     : String,
-  twitter_username  : String,
-  twitter_hashtag   : String,
+  released_on       : Option[String],
+  released_on_about : Option[String],
+  official_site_url : Option[String],
+  wikipedia_url     : Option[String],
+  twitter_username  : Option[String],
+  twitter_hashtag   : Option[String],
   images            : Option[Work.Images],
-  episodes_count    : Int,
-  watchers_count    : Int,
-  reviews_count     : Int,
-  no_episodes       : Boolean,
+  episodes_count    : Option[Int],
+  watchers_count    : Option[Int],
+  reviews_count     : Option[Int],
+  no_episodes       : Option[Boolean],
   status            : Option[Status]
 ) extends JsonToString[Work]
 
@@ -76,7 +76,7 @@ object Work {
       "id", "title", "title_kana", "media", "media_text",
       "season_name", "season_name_text", "released_on",
       "released_on_about", "official_site_url", "wikipedia_url",
-      "twitter_username", "twitter_hashtag", "iamges",
+      "twitter_username", "twitter_hashtag", "images",
       "episodes_count", "watchers_count", "reviews_count",
       "no_episodes", "status"
     )

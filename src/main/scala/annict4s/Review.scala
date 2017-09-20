@@ -1,20 +1,20 @@
 package annict4s
 
 case class Review(
-  id                     : Long,
-  title                  : String,
-  body                   : String,
-  rating_animation_state : Rating,
-  rating_music_state     : Rating,
-  rating_story_state     : Rating,
-  rating_character_state : Rating,
-  rating_overall_state   : Rating,
-  likes_count            : Int,
-  impressions_count      : Int,
-  created_at             : DateTime,
-  modified_at            : DateTime,
-  user                   : User,
-  work                   : Work
+  id                     : Option[Long],
+  title                  : Option[String],
+  body                   : Option[String],
+  rating_animation_state : Option[Rating],
+  rating_music_state     : Option[Rating],
+  rating_story_state     : Option[Rating],
+  rating_character_state : Option[Rating],
+  rating_overall_state   : Option[Rating],
+  likes_count            : Option[Int],
+  impressions_count      : Option[Int],
+  created_at             : Option[DateTime],
+  modified_at            : Option[DateTime],
+  user                   : Option[User],
+  work                   : Option[Work]
 ) extends JsonToString[Review]
 
 object Review {

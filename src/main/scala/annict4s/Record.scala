@@ -1,16 +1,16 @@
 package annict4s
 
 case class Record(
-  id             : Long,
-  commnet        : String,
-  rating_state   : Rating,
-  is_modified    : Boolean,
-  likes_count    : Int,
-  comments_count : Int,
-  created_at     : DateTime,
-  user           : User,
-  work           : Work,
-  episode        : Episode
+  id             : Option[Long],
+  comment        : Option[String],
+  rating_state   : Option[Rating],
+  is_modified    : Option[Boolean],
+  likes_count    : Option[Int],
+  comments_count : Option[Int],
+  created_at     : Option[DateTime],
+  user           : Option[User],
+  work           : Option[Work],
+  episode        : Option[Episode]
 ) extends JsonToString[Record]
 
 object Record {

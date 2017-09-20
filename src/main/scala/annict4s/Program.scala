@@ -1,12 +1,12 @@
 package annict4s
 
 case class Program(
-  id             : Long,
-  started_at     : DateTime,
-  is_rebroadcast : Boolean,
-  channel        : String,
-  work           : Work,
-  episode        : Episode
+  id             : Option[Long],
+  started_at     : Option[DateTime],
+  is_rebroadcast : Option[Boolean],
+  channel        : Option[String],
+  work           : Option[Work],
+  episode        : Option[Episode]
 ) extends JsonToString[Program]
 
 object Program {

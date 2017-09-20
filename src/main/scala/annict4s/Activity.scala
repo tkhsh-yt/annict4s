@@ -1,11 +1,11 @@
 package annict4s
 
 case class Activity(
-  id              : Long,
-  user            : User,
-  work            : Work,
-  action          : Activity.Action,
-  created_at      : DateTime,
+  id              : Option[Long],
+  user            : Option[User],
+  work            : Option[Work],
+  action          : Option[Activity.Action],
+  created_at      : Option[DateTime],
   episode         : Option[Episode],                 // for create_record
   record          : Option[Record],                  // for create_record
   review          : Option[Review],                  // for create_revie

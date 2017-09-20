@@ -1,22 +1,22 @@
 package annict4s
 
 case class User(
-  id                   : Long,
-  username             : String,
-  name                 : String,
-  description          : String,
-  url                  : String,
-  avatar_url           : String,
-  background_image_url : String,
-  records_count        : Int,
-  followings_count     : Int,
-  followers_count      : Int,
-  wanna_watch_count    : Int,
-  watching_count       : Int,
-  watched_count        : Int,
-  on_hold_count        : Int,
-  stop_watching_count  : Int,
-  created_at           : DateTime
+  id                   : Option[Long],
+  username             : Option[String],
+  name                 : Option[String],
+  description          : Option[String],
+  url                  : Option[String],
+  avatar_url           : Option[String],
+  background_image_url : Option[String],
+  records_count        : Option[Int],
+  followings_count     : Option[Int],
+  followers_count      : Option[Int],
+  wanna_watch_count    : Option[Int],
+  watching_count       : Option[Int],
+  watched_count        : Option[Int],
+  on_hold_count        : Option[Int],
+  stop_watching_count  : Option[Int],
+  created_at           : Option[DateTime]
 ) extends JsonToString[User]
 
 object User {

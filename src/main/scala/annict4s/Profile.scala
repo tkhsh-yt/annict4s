@@ -1,23 +1,23 @@
 package annict4s
 
 case class Profile(
-  id                   : Long,
-  username             : String,
-  description          : String,
-  url                  : String,
-  avatar_url           : String,
-  background_image_url : String,
-  records_count        : Int,
-  followings_count     : Int,
-  followers_count      : Int,
-  wanna_watch_count    : Int,
-  watching_count       : Int,
-  watched_count        : Int,
-  on_hold_count        : Int,
-  stop_watching_count  : Int,
-  created_at           : DateTime,
-  email                : String,
-  notifications_count  : Int
+  id                   : Option[Long],
+  username             : Option[String],
+  description          : Option[String],
+  url                  : Option[String],
+  avatar_url           : Option[String],
+  background_image_url : Option[String],
+  records_count        : Option[Int],
+  followings_count     : Option[Int],
+  followers_count      : Option[Int],
+  wanna_watch_count    : Option[Int],
+  watching_count       : Option[Int],
+  watched_count        : Option[Int],
+  on_hold_count        : Option[Int],
+  stop_watching_count  : Option[Int],
+  created_at           : Option[DateTime],
+  email                : Option[String],
+  notifications_count  : Option[Int]
 ) extends JsonToString[Profile]
 
 object Profile {
