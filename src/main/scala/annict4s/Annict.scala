@@ -1,7 +1,7 @@
 package annict4s
 
 import httpz._
-import scalaz.{Inject, Free, Reader, \/}
+import scalaz.{Inject, Free, Reader}
 
 object Annict4s extends Annict[Command, Free[Command, ?]] {
   override protected[this] def f[A](c: Command[A]) = lift(c)
@@ -136,4 +136,17 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       f(Command.Activities(fields, filter_user,
         page, per_page, sort_id)(token))
     }
+
+  def me(): Authorized[G[User]] =
+    Reader { token =>
+      f(SelfCommand.Me(token))
+    }
+
+  // def meStatuses(
+  //   work_id: Long,
+  //   kind   : Status.Kind
+  // ): Authorized[G[NoContent]] =
+  //   Reader { token =>
+  //     f(SelfCommand.Statuses(work_id, kind)(token))
+  //   }
 }

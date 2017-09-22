@@ -2,13 +2,13 @@ package annict4s
 
 import argonaut.DecodeJson
 import httpz._
-import scalaz.{Free, Inject, NonEmptyList, \/, -\/, \/-}
+import scalaz.{Free, Inject, NonEmptyList}
 import scalaz.syntax.monoid._
 
 /**
   * @see https://github.com/xuwei-k/ghscala/blob/master/src/main/scala/Command.scala
   */
-sealed abstract class Command[A](val f: String => Request)(implicit val decoder: DecodeJson[A]){
+sealed abstract class Command[A](val f: String => Request)(implicit val decoder: DecodeJson[A]) {
   final def request: httpz.Request =
     requestWithURL(Annict.baseURL)
 
@@ -33,20 +33,8 @@ sealed abstract class Command[A](val f: String => Request)(implicit val decoder:
 
 object Command {
 
-  private[annict4s] def get(url: String, opt: Config = httpz.emptyConfig): String => Request = {
+  private[annict4s] def request(url: String, opt: Config = httpz.emptyConfig): String => Request = {
     baseURL => opt(Request(url = baseURL + url))
-  }
-
-  private[annict4s] def post(url: String, opt: Config = httpz.emptyConfig): String => Request = {
-    baseURL => opt(Request(url = baseURL + url, method = "POST"))
-  }
-
-  private[annict4s] def get_with_oauth(url: String, opt: Config = httpz.emptyConfig)(accessToken: AccessToken): String => Request = {
-    get(url, opt |+| Request.bearer(accessToken.token))
-  }
-
-  private[annict4s] def post_with_oauth(url: String, opt: Config = httpz.emptyConfig)(accessToken: AccessToken): String => Request = {
-    post(url, opt |+| Request.bearer(accessToken.token))
   }
 
   final case class Works(
@@ -59,18 +47,21 @@ object Command {
     sort_id            : String = "desc",
     sort_season        : String = "desc",
     sort_watchers_count: String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Works](
-    get_with_oauth("/v1/works", Request.params(
-      ("fields"             , fields.mkString(",")),
-      ("filter_ids"         , filter_ids.mkString(",")),
-      ("filter_season"      , filter_season),
-      ("filter_title"       , filter_title),
-      ("page"               , page.toString),
-      ("per_page"           , per_page.toString),
-      ("sort_id"            , sort_id.toString),
-      ("sort_season"        , sort_season),
-      ("sort_watchers_count", sort_watchers_count)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Works](
+    request(
+      "/v1/works",
+      Request.params(
+        ("fields"             , fields.mkString(",")),
+        ("filter_ids"         , filter_ids.mkString(",")),
+        ("filter_season"      , filter_season),
+        ("filter_title"       , filter_title),
+        ("page"               , page.toString),
+        ("per_page"           , per_page.toString),
+        ("sort_id"            , sort_id.toString),
+        ("sort_season"        , sort_season),
+        ("sort_watchers_count", sort_watchers_count)
+      ) |+| token.config
+    )
   )
 
   final case class Episodes(
@@ -81,16 +72,19 @@ object Command {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_sort_number: String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Episodes](
-    get_with_oauth("/v1/episodes", Request.params(
-      ("fields"          , fields.mkString(",")),
-      ("filter_ids"      , filter_ids.mkString(",")),
-      ("filter_work_id"  , filter_work_id.toString),
-      ("page"            , page.toString),
-      ("per_page"        , per_page.toString),
-      ("sort_id"         , sort_id.toString),
-      ("sort_sort_number", sort_sort_number)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Episodes](
+    request(
+      "/v1/episodes",
+      Request.params(
+        ("fields"          , fields.mkString(",")),
+        ("filter_ids"      , filter_ids.mkString(",")),
+        ("filter_work_id"  , filter_work_id.toString),
+        ("page"            , page.toString),
+        ("per_page"        , per_page.toString),
+        ("sort_id"         , sort_id.toString),
+        ("sort_sort_number", sort_sort_number)
+      ) |+| token.config
+    )
   )
 
   final case class Records(
@@ -102,16 +96,19 @@ object Command {
     per_page                 : Int = 25,
     sort_id                  : String = "desc",
     sort_likes_count         : String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Records](
-    get_with_oauth("/v1/records", Request.params(
-      ("fields"           , fields.mkString(",")),
-      ("filter_ids"       , filter_ids.mkString(",")),
-      ("filter_episode_id", filter_episode_id.toString),
-      ("page"             , page.toString),
-      ("per_page"         , per_page.toString),
-      ("sort_id"          , sort_id),
-      ("sort_likes_count" , sort_likes_count)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Records](
+    request(
+      "/v1/records",
+      Request.params(
+        ("fields"           , fields.mkString(",")),
+        ("filter_ids"       , filter_ids.mkString(",")),
+        ("filter_episode_id", filter_episode_id.toString),
+        ("page"             , page.toString),
+        ("per_page"         , per_page.toString),
+        ("sort_id"          , sort_id),
+        ("sort_likes_count" , sort_likes_count)
+      ) |+| token.config
+    )
   )
 
   final case class Reviews(
@@ -122,16 +119,19 @@ object Command {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_likes_count: String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Reviews](
-    get_with_oauth("/v1/reviews", Request.params(
-      ("fields"          , fields.mkString(",")),
-      ("filter_ids"      , filter_ids.mkString(",")),
-      ("filter_work_id"  , filter_work_id.toString),
-      ("page"            , page.toString),
-      ("per_page"        , per_page.toString),
-      ("sort_id"         , sort_id),
-      ("sort_likes_count", sort_likes_count)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Reviews](
+    request(
+      "/v1/reviews",
+      Request.params(
+        ("fields"          , fields.mkString(",")),
+        ("filter_ids"      , filter_ids.mkString(",")),
+        ("filter_work_id"  , filter_work_id.toString),
+        ("page"            , page.toString),
+        ("per_page"        , per_page.toString),
+        ("sort_id"         , sort_id),
+        ("sort_likes_count", sort_likes_count)
+      ) |+| token.config
+    )
   )
 
   final case class Users(
@@ -141,15 +141,18 @@ object Command {
     page            : Int = 1,
     per_page        : Int = 25,
     sort_id         : String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Users](
-    get_with_oauth("/v1/users", Request.params(
-      ("fields"          , fields.mkString(",")),
-      ("filter_ids"      , filter_ids.mkString(",")),
-      ("filter_usernames", filter_usernames.mkString(",")),
-      ("page"            , page.toString),
-      ("per_page"        , per_page.toString),
-      ("sort_id"         , sort_id)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Users](
+    request(
+      "/v1/users",
+      Request.params(
+        ("fields"          , fields.mkString(",")),
+        ("filter_ids"      , filter_ids.mkString(",")),
+        ("filter_usernames", filter_usernames.mkString(",")),
+        ("page"            , page.toString),
+        ("per_page"        , per_page.toString),
+        ("sort_id"         , sort_id)
+      ) |+| token.config
+    )
   )
 
   final case class Following(
@@ -159,15 +162,18 @@ object Command {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Users](
-    get_with_oauth("/v1/following", Request.params(
-      ("fields"         , fields.mkString(",")),
-      ("filter_ids"     , filter_ids.mkString(",")),
-      ("filter_username", filter_username),
-      ("page"           , page.toString),
-      ("per_page"       , per_page.toString),
-      ("sort_id"        , sort_id)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Users](
+    request(
+      "/v1/following",
+      Request.params(
+        ("fields"         , fields.mkString(",")),
+        ("filter_ids"     , filter_ids.mkString(",")),
+        ("filter_username", filter_username),
+        ("page"           , page.toString),
+        ("per_page"       , per_page.toString),
+        ("sort_id"        , sort_id)
+      ) |+| token.config
+    )
   )
 
   final case class Followers(
@@ -177,15 +183,18 @@ object Command {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Users](
-    get_with_oauth("/v1/followers", Request.params(
-      ("fields"         , fields.mkString(",")),
-      ("filter_ids"     , filter_ids.mkString(",")),
-      ("filter_username", filter_username),
-      ("page"           , page.toString),
-      ("per_page"       , per_page.toString),
-      ("sort_id"        , sort_id)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Users](
+    request(
+      "/v1/followers",
+      Request.params(
+        ("fields"         , fields.mkString(",")),
+        ("filter_ids"     , filter_ids.mkString(",")),
+        ("filter_username", filter_username),
+        ("page"           , page.toString),
+        ("per_page"       , per_page.toString),
+        ("sort_id"        , sort_id)
+      ) |+| token.config
+    )
   )
 
   final case class Activities(
@@ -194,16 +203,38 @@ object Command {
     page       : Int = 1,
     per_page   : Int = 25,
     sort_id    : String = "desc"
-  )(accessToken: AccessToken) extends Command[annict4s.Activities](
-    get_with_oauth("/v1/activities", Request.params(
-      ("fields"         , fields.mkString(",")),
-      filter_user match {
-        case UserId(id)       => ("filter_user_id", id.toString)
-        case UserName(username) => ("filter_username", username)
-      },
-      ("page"           , page.toString),
-      ("per_page"       , per_page.toString),
-      ("sort_id"        , sort_id)
-    ))(accessToken)
+  )(token: AccessToken) extends Command[annict4s.Activities](
+    request(
+      "/v1/activities",
+      Request.params(
+        ("fields"         , fields.mkString(",")),
+        filter_user match {
+          case UserId(id)       => ("filter_user_id", id.toString)
+          case UserName(username) => ("filter_username", username)
+        },
+        ("page"           , page.toString),
+        ("per_page"       , per_page.toString),
+        ("sort_id"        , sort_id)
+      ) |+| token.config
+    )
   )
+}
+
+object SelfCommand {
+
+  import Command.request
+
+  case class Me(token: AccessToken) extends Command[annict4s.User](
+    request("/v1/me", token.config)
+  )
+
+  // case class Statuses(
+  //   work_id: Long,
+  //   kind   : Status.Kind
+  // )(accessToken: AccessToken) extends Command[NoContent](
+  //   post_with_oauth("/v1/me/statuses", Request.params(
+  //     ("work_id", work_id.toString),
+  //     ("kind"   , kind.toString)
+  //   ))(accessToken)
+  // )
 }
