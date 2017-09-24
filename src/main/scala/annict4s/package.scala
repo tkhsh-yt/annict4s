@@ -1,7 +1,8 @@
 import argonaut.{EncodeJson, DecodeJson}
 import java.text.SimpleDateFormat
 
-import scalaz.Reader
+import scalaz.{~>, Reader}
+import httpz.{Action}
 
 package object annict4s {
 
@@ -23,4 +24,6 @@ package object annict4s {
         }
       }, "DateTime")
     )
+
+  val interpreter: Command ~> Action = Interpreter
 }
