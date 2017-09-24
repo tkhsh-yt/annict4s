@@ -8,7 +8,7 @@ import Scalaz._
 /**
   * @see https://github.com/xuwei-k/ghscala/blob/master/src/main/scala/Command.scala
   */
-sealed abstract class Command[A](val f: String => Request)(implicit val decoder: DecodeJson[A]) {
+sealed abstract class Command[A](val f: String => Request)(implicit val decoder: httpz.Request => httpz.Action[A]) {
   final def request: httpz.Request =
     requestWithURL(Annict.baseURL)
 
@@ -16,7 +16,7 @@ sealed abstract class Command[A](val f: String => Request)(implicit val decoder:
     f(baseURL)
 
   final def actionWithURL(baseURL: String): httpz.Action[A] =
-    Core.json[A](requestWithURL(baseURL))(decoder)
+    decoder(requestWithURL(baseURL))
 
   final def action: httpz.Action[A] =
     actionWithURL(Annict.baseURL)
@@ -32,6 +32,9 @@ sealed abstract class Command[A](val f: String => Request)(implicit val decoder:
 }
 
 object Command {
+
+  implicit private[annict4s] def CoreJson[A: DecodeJson]: httpz.Request => httpz.Action[A] =
+    Core.json[A]
 
   private[annict4s] def request(method: String, url: String, opt: Config = httpz.emptyConfig): String => Request = {
     baseURL => opt(Request(url = baseURL + url, method = method))
@@ -229,21 +232,28 @@ object Command {
 
 object SelfCommand {
 
-  import Command.request
+  import Command.{CoreJson, request}
+
+  private[annict4s] val CoreString: Request => httpz.Action[String] = {
+    Core.string(_).leftMap(Error.http)
+  }
 
   final case class Me(token: AccessToken) extends Command[annict4s.User](
     request("GET", "/v1/me", token.config)
   )
 
-  // final case class Statuses(
-  //   work_id: Long,
-  //   kind   : Status.Kind
-  // )(accessToken: AccessToken) extends Command[Unit](
-  //   post_with_oauth("/v1/me/statuses", Request.params(
-  //     ("work_id", work_id.toString),
-  //     ("kind"   , kind.toString)
-  //   ))(accessToken)
-  // )
+  final case class Statuses(
+    work_id: Long,
+    kind   : Status.Kind
+  )(token: AccessToken) extends Command[String](
+    request(
+      "POST",
+      "/v1/me/statuses",
+      Request.params(
+        ("work_id", work_id.toString),
+        ("kind"   , kind.toString)
+      ) |+| token.config)
+  )(CoreString)
 
   final case class Record(
     episode_id    : Long,
@@ -284,15 +294,15 @@ object SelfCommand {
     )
   )
 
-  // final case class DeleteRecord(
-  //   id: Long
-  // )(token: AccessToken) extends Command[Unit](
-  //   request(
-  //     "DELETE",
-  //     s"/v1/me/records/${id}",
-  //     token.config
-  //   )
-  // )
+  final case class DeleteRecord(
+    id: Long
+  )(token: AccessToken) extends Command[String](
+    request(
+      "DELETE",
+      s"/v1/me/records/${id}",
+      token.config
+    )
+  )(CoreString)
 
   final case class Review(
     work_id               : Long,
@@ -350,15 +360,15 @@ object SelfCommand {
     )
   )
 
-  // final case class DeleteReview(
-  //   id: Long
-  // )(token: AccessToken) extends Command[Unit](
-  //   request(
-  //     "DELETE",
-  //     s"/v1/me/reviews/${id}",
-  //     token.config
-  //   )
-  // )
+  final case class DeleteReview(
+    id: Long
+  )(token: AccessToken) extends Command[String](
+    request(
+      "DELETE",
+      s"/v1/me/reviews/${id}",
+      token.config
+    )
+  )(CoreString)
 
   final case class Works(
     fields             : List[String] = Nil,

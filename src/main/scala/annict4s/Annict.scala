@@ -160,13 +160,13 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
         f(SelfCommand.Me(token))
       }
 
-    // def meStatuses(
-    //   work_id: Long,
-    //   kind   : Status.Kind
-    // ): Authorized[G[Unit]] =
-    //   Reader { token =>
-    //     f(SelfCommand.Statuses(work_id, kind)(token))
-    //   }
+    def status(
+      work_id: Long,
+      kind   : Status.Kind
+    ): Authorized[G[String]] =
+      Reader { token =>
+        f(SelfCommand.Statuses(work_id, kind)(token))
+      }
 
     def postRecord(
       episode_id    : Long,
@@ -196,12 +196,12 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           )(token))
       }
 
-    // def deleteRecord(
-    //   id: Long
-    // ): Authorized[G[Unit]] =
-    //   Reader { token =>
-    //     f(SelfCommand.DeleteRecord(id)(token))
-    //   }
+    def deleteRecord(
+      id: Long
+    ): Authorized[G[String]] =
+      Reader { token =>
+        f(SelfCommand.DeleteRecord(id)(token))
+      }
 
     def postReview(
       work_id               : Long,
@@ -242,12 +242,12 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           )(token))
       }
 
-    // def deleteReview(
-    //   id: Long
-    // ): Authorized[G[Unit]] =
-    //   Reader { token =>
-    //     f(SelfCommand.DeleteReview(id)(token))
-    //   }
+    def deleteReview(
+      id: Long
+    ): Authorized[G[String]] =
+      Reader { token =>
+        f(SelfCommand.DeleteReview(id)(token))
+      }
 
     def works(
       fields             : List[String] = Nil,
