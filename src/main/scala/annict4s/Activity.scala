@@ -6,11 +6,11 @@ case class Activity(
   work            : Option[Work],
   action          : Option[Activity.Action],
   created_at      : Option[DateTime],
-  episode         : Option[Episode],                 // for create_record
-  record          : Option[Record],                  // for create_record
-  review          : Option[Review],                  // for create_revie
-  multiple_record : Option[Activity.MultipleRecord], // for create_multiple_records
-  status          : Option[Status]                   // for create_status
+  episode         : Option[Episode],                       // for create_record
+  record          : Option[Record],                        // for create_record
+  review          : Option[Review],                        // for create_revie
+  multiple_record : Option[List[Activity.MultipleRecord]], // for create_multiple_records
+  status          : Option[Status]                         // for create_status
 ) extends JsonToString[Activity]
 
 object Activity {

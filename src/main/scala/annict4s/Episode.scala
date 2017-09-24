@@ -2,7 +2,7 @@ package annict4s
 
 case class Episode(
   id                    : Option[Long],
-  number                : Option[Int],
+  number                : Option[String],
   number_text           : Option[String],
   sort_number           : Option[Int],
   title                 : Option[String],
@@ -36,7 +36,7 @@ object Episode {
   implicit def EpisodeDecodeJson: DecodeJson[Episode] =
     DecodeJson( e => for {
       id                    <- (e --\ "id").as[Option[Long]]
-      number                <- (e --\ "number").as[Option[Int]]
+      number                <- (e --\ "number").as[Option[String]]
       number_text           <- (e --\ "number_text").as[Option[String]]
       sort_number           <- (e --\ "sort_number").as[Option[Int]]
       title                 <- (e --\ "title").as[Option[String]]

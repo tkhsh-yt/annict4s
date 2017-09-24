@@ -1,20 +1,25 @@
 package annict4s
 
 trait Rating
-case object Bad      extends Rating {
-  override def toString = "bad"
-}
-case object Average extends Rating {
-  override def toString = "average"
-}
-case object Good     extends Rating {
-  override def toString = "rating"
-}
-case object Great    extends Rating {
-  override def toString = "great"
-}
 
 object Rating {
+
+  case object Bad extends Rating {
+    override def toString = "bad"
+  }
+  case object Average extends Rating {
+    override def toString = "average"
+  }
+  case object Good extends Rating {
+    override def toString = "rating"
+  }
+  case object Great extends Rating {
+    override def toString = "great"
+  }
+  case object NoSelect extends Rating {
+    override def toString = "no_select"
+  }
+
 
   import argonaut.{EncodeJson, DecodeJson}
   import scalaz.syntax.std.option._
