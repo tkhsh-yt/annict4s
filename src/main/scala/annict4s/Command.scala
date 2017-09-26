@@ -456,3 +456,51 @@ object SelfCommand {
     )
   )
 }
+
+object OAuthCommand {
+
+  import Command.{request, CoreJson}
+
+  case class Token(
+    client_id    : String,
+    client_secret: String,
+    redirect_url : String,
+    code         : String
+  ) extends Command[annict4s.AccessToken](
+    request(
+      "POST",
+      "/oauth/token",
+      Request.params(
+        ("client_id"    , client_id),
+        ("client_secret", client_secret),
+        ("grant_type"   , "authorization_code"),
+        ("redirect_url" , redirect_url),
+        ("code"         , code)
+      )
+    )
+  )
+
+  case class Info()(token: AccessToken) extends Command[annict4s.TokenInfo](
+    request(
+      "GET",
+      "/oauth/token/info",
+      token.config
+    )
+  )
+
+  case class Revoke(
+    client_id    : String,
+    client_secret: String,
+    token        : String
+  )(accessToken: AccessToken) extends Command[Unit](
+    request(
+      "POST",
+      "/oauth/revoke",
+      Request.params(
+        ("client_id"    , client_id.toString),
+        ("client_secret", client_secret.toString),
+        ("token"        , token)
+      ) |+| accessToken.config
+    )
+  )
+}

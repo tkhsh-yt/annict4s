@@ -307,4 +307,31 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           )(token))
       }
   }
+
+  object OAuth {
+
+    def token(
+      client_id    : String,
+      client_secret: String,
+      redirect_url : String,
+      code         : String
+    ): G[AccessToken] =
+      f(OAuthCommand.Token(
+          client_id, client_secret, redirect_url, code
+        ))
+
+    def info(): Authorized[G[TokenInfo]] =
+      Reader { token =>  f(OAuthCommand.Info()(token)) }
+
+    def revoke(
+      client_id    : String,
+      client_secret: String,
+      token        : String
+    ): Authorized[G[Unit]] =
+      Reader { accessToken =>
+        f(OAuthCommand.Revoke(
+            client_id, client_secret, token
+          )(accessToken))
+      }
+  }
 }
