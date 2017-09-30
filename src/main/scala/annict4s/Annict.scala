@@ -234,7 +234,6 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           filter_status, page, per_page, sort_id,
           sort_season, sort_watchers_count
         ))
-      }
 
     def programs(
       fields              : List[String] = Nil,
@@ -269,6 +268,7 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           fields, filter_actions, filter_muted,
           page, per_page, sort_id
         ))
+  }
 
   object OAuth {
 
