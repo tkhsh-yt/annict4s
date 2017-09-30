@@ -278,7 +278,7 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       redirect_url : String = "urn:ietf:wg:oauth:2.0:oob",
       scope        : String = "read+write"
     ): String =
-      s"${Annict.baseURL}/oauth/authorize?client_id=${client_id}&response_type=${response_type}&redirect_url=${redirect_url}&scope=${scope}"
+      s"https://annict.jp/oauth/authorize?client_id=${client_id}&response_type=${response_type}&redirect_uri=${redirect_url}&scope=${scope}"
 
     def token(
       client_id    : String,
