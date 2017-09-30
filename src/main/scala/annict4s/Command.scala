@@ -373,7 +373,7 @@ object SelfCommand {
     filter_ids         : List[Long] = Nil,
     filter_season      : String = "",
     filter_title       : String = "",
-    filter_status      : Status.Kind = Status.NoSelect,
+    filter_status      : Status.Kind = Status.Watching,
     page               : Int = 1,
     per_page           : Int = 25,
     sort_id            : String = "desc",
@@ -388,13 +388,12 @@ object SelfCommand {
         ("filter_ids"         , filter_ids.mkString(",")),
         ("filter_season"      , filter_season),
         ("filter_title"       , filter_title),
+        ("filter_status"      , filter_status.toString),
         ("page"               , page.toString),
         ("per_page"           , per_page.toString),
         ("sort_id"            , sort_id),
         ("sort_season"        , sort_season),
         ("sort_watchers_count", sort_watchers_count)
-      ) |+| (filter_status == Status.NoSelect) ?? Request.params(
-        ("filter_status"      , filter_status.toString)
       )
     )
   )
