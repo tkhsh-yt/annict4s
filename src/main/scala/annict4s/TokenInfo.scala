@@ -5,7 +5,7 @@ case class TokenInfo(
   scopes            : List[String],
   expires_in_seconds: Option[Long],
   application       : TokenInfo.Application,
-  created_at        : DateTime
+  created_at        : Long
 ) extends JsonToString[TokenInfo]
 
 object TokenInfo {
