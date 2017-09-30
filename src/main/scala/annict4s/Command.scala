@@ -445,7 +445,7 @@ object SelfCommand {
       "/v1/me/following_activities",
       Request.params(
         ("fields"        , fields.mkString(",")),
-        ("filter_actions", fields.mkString(",")),
+        ("filter_actions", filter_actions.mkString(",")),
         ("filter_muted"  , filter_muted.toString),
         ("page"          , page.toString),
         ("per_page"      , per_page.toString),
