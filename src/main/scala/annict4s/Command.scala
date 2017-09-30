@@ -50,7 +50,7 @@ object Command {
     sort_id            : String = "desc",
     sort_season        : String = "desc",
     sort_watchers_count: String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Works](
+  ) extends Command[annict4s.Works](
     request(
       "GET",
       "/v1/works",
@@ -64,7 +64,7 @@ object Command {
         ("sort_id"            , sort_id.toString),
         ("sort_season"        , sort_season),
         ("sort_watchers_count", sort_watchers_count)
-      ) |+| token.config
+      )
     )
   )
 
@@ -76,7 +76,7 @@ object Command {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_sort_number: String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Episodes](
+  ) extends Command[annict4s.Episodes](
     request(
       "GET",
       "/v1/episodes",
@@ -88,7 +88,7 @@ object Command {
         ("per_page"        , per_page.toString),
         ("sort_id"         , sort_id.toString),
         ("sort_sort_number", sort_sort_number)
-      ) |+| token.config
+      )
     )
   )
 
@@ -101,7 +101,7 @@ object Command {
     per_page                 : Int = 25,
     sort_id                  : String = "desc",
     sort_likes_count         : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Records](
+  ) extends Command[annict4s.Records](
     request(
       "GET",
       "/v1/records",
@@ -113,7 +113,7 @@ object Command {
         ("per_page"         , per_page.toString),
         ("sort_id"          , sort_id),
         ("sort_likes_count" , sort_likes_count)
-      ) |+| token.config
+      )
     )
   )
 
@@ -125,7 +125,7 @@ object Command {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_likes_count: String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Reviews](
+  ) extends Command[annict4s.Reviews](
     request(
       "GET",
       "/v1/reviews",
@@ -137,7 +137,7 @@ object Command {
         ("per_page"        , per_page.toString),
         ("sort_id"         , sort_id),
         ("sort_likes_count", sort_likes_count)
-      ) |+| token.config
+      )
     )
   )
 
@@ -148,7 +148,7 @@ object Command {
     page            : Int = 1,
     per_page        : Int = 25,
     sort_id         : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Users](
+  ) extends Command[annict4s.Users](
     request(
       "GET",
       "/v1/users",
@@ -159,7 +159,7 @@ object Command {
         ("page"            , page.toString),
         ("per_page"        , per_page.toString),
         ("sort_id"         , sort_id)
-      ) |+| token.config
+      )
     )
   )
 
@@ -170,7 +170,7 @@ object Command {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Users](
+  ) extends Command[annict4s.Users](
     request(
       "GET",
       "/v1/following",
@@ -181,7 +181,7 @@ object Command {
         ("page"           , page.toString),
         ("per_page"       , per_page.toString),
         ("sort_id"        , sort_id)
-      ) |+| token.config
+      )
     )
   )
 
@@ -192,7 +192,7 @@ object Command {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Users](
+  ) extends Command[annict4s.Users](
     request(
       "GET",
       "/v1/followers",
@@ -203,7 +203,7 @@ object Command {
         ("page"           , page.toString),
         ("per_page"       , per_page.toString),
         ("sort_id"        , sort_id)
-      ) |+| token.config
+      )
     )
   )
 
@@ -214,7 +214,7 @@ object Command {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Activities](
+  ) extends Command[annict4s.Activities](
     request(
       "GET",
       "/v1/activities",
@@ -225,7 +225,7 @@ object Command {
         ("page"           , page.toString),
         ("per_page"       , per_page.toString),
         ("sort_id"        , sort_id)
-      ) |+| token.config
+      )
     )
   )
 }
@@ -238,21 +238,21 @@ object SelfCommand {
     Core.string(_).leftMap(Error.http)
   }
 
-  final case class Me(token: AccessToken) extends Command[annict4s.User](
-    request("GET", "/v1/me", token.config)
+  final case class Me() extends Command[annict4s.User](
+    request("GET", "/v1/me")
   )
 
   final case class Statuses(
     work_id: Long,
     kind   : Status.Kind
-  )(token: AccessToken) extends Command[String](
+  ) extends Command[String](
     request(
       "POST",
       "/v1/me/statuses",
       Request.params(
         ("work_id", work_id.toString),
         ("kind"   , kind.toString)
-      ) |+| token.config)
+      ))
   )(CoreString)
 
   final case class Record(
@@ -261,7 +261,7 @@ object SelfCommand {
     rating_state  : Option[Rating] = None,
     share_twitter : Boolean = false,
     share_facebook: Boolean = false
-  )(token: AccessToken) extends Command[annict4s.Record](
+  ) extends Command[annict4s.Record](
     request(
       "POST",
       "/v1/me/records",
@@ -271,7 +271,7 @@ object SelfCommand {
         ("rating_state"  , rating_state.map(_.toString).orZero),
         ("share_twitter" , share_twitter.toString),
         ("share_facebook", share_facebook.toString)
-      ) |+| token.config
+      )
     )
   )
 
@@ -281,7 +281,7 @@ object SelfCommand {
     rating_state  : Rating = Rating.NoSelect,
     share_twitter : Boolean,
     share_facebook: Boolean
-  )(token: AccessToken) extends Command[annict4s.Record](
+  ) extends Command[annict4s.Record](
     request(
       "PATCH",
       s"/v1/me/records/${id}",
@@ -290,17 +290,16 @@ object SelfCommand {
         ("rating_state"  , rating_state.toString),
         ("share_twitter" , share_twitter.toString),
         ("share_facebook", share_facebook.toString)
-      ) |+| token.config
+      )
     )
   )
 
   final case class DeleteRecord(
     id: Long
-  )(token: AccessToken) extends Command[String](
+  ) extends Command[String](
     request(
       "DELETE",
-      s"/v1/me/records/${id}",
-      token.config
+      s"/v1/me/records/${id}"
     )
   )(CoreString)
 
@@ -314,7 +313,7 @@ object SelfCommand {
     rating_overall_state  : Rating = Rating.NoSelect,
     share_twitter         : Boolean = false,
     share_facebook        : Boolean = false
-  )(token: AccessToken) extends Command[annict4s.Review](
+  ) extends Command[annict4s.Review](
     request(
       "POST",
       "/v1/me/reviews",
@@ -327,7 +326,7 @@ object SelfCommand {
         ("raging_overall_state"  , rating_overall_state.toString),
         ("share_twitter"         , share_twitter.toString),
         ("share_facebook"        , share_facebook.toString)
-      ) |+| token.config
+      )
     )
   )
 
@@ -342,7 +341,7 @@ object SelfCommand {
     rating_overall_state  : Rating = Rating.NoSelect,
     share_twitter         : Boolean = false,
     share_facebook        : Boolean = false
-  )(token: AccessToken) extends Command[annict4s.Review](
+  ) extends Command[annict4s.Review](
     request(
       "PATCH",
       s"/v1/me/reviews/${id}",
@@ -356,17 +355,16 @@ object SelfCommand {
         ("rating_overall_state"  , rating_overall_state.toString),
         ("share_twitter"         , share_twitter.toString),
         ("share_facebook"        , share_facebook.toString)
-      ) |+| token.config
+      )
     )
   )
 
   final case class DeleteReview(
     id: Long
-  )(token: AccessToken) extends Command[String](
+  ) extends Command[String](
     request(
       "DELETE",
-      s"/v1/me/reviews/${id}",
-      token.config
+      s"/v1/me/reviews/${id}"
     )
   )(CoreString)
 
@@ -381,7 +379,7 @@ object SelfCommand {
     sort_id            : String = "desc",
     sort_season        : String = "desc",
     sort_watchers_count: String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Works](
+  ) extends Command[annict4s.Works](
     request(
       "GET",
       "/v1/me/works",
@@ -396,7 +394,7 @@ object SelfCommand {
         ("sort_id"            , sort_id),
         ("sort_season"        , sort_season),
         ("sort_watchers_count", sort_watchers_count)
-      ) |+| token.config
+      )
     )
   )
 
@@ -413,7 +411,7 @@ object SelfCommand {
     per_page            : Int = 25,
     sort_id             : String = "desc",
     sort_started_at     : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Programs](
+  ) extends Command[annict4s.Programs](
     request(
       "GET",
       "/v1/me/programs",
@@ -430,7 +428,7 @@ object SelfCommand {
         ("per_page"            , per_page.toString),
         ("sort_id"             , sort_id),
         ("sort_started_at"     , sort_started_at)
-      ) |+| token.config
+      )
     )
   )
 
@@ -441,7 +439,7 @@ object SelfCommand {
     page          : Int = 1,
     per_page      : Int = 25,
     sort_id       : String = "desc"
-  )(token: AccessToken) extends Command[annict4s.Activities](
+  ) extends Command[annict4s.Activities](
     request(
       "GET",
       "/v1/me/following_activities",
@@ -452,7 +450,7 @@ object SelfCommand {
         ("page"          , page.toString),
         ("per_page"      , per_page.toString),
         ("sort_id"       , sort_id)
-      ) |+| token.config
+      )
     )
   )
 }
@@ -480,11 +478,10 @@ object OAuthCommand {
     )
   )
 
-  case class Info()(token: AccessToken) extends Command[annict4s.TokenInfo](
+  case class Info() extends Command[annict4s.TokenInfo](
     request(
       "GET",
-      "/oauth/token/info",
-      token.config
+      "/oauth/token/info"
     )
   )
 
@@ -492,7 +489,7 @@ object OAuthCommand {
     client_id    : String,
     client_secret: String,
     token        : String
-  )(accessToken: AccessToken) extends Command[Unit](
+  ) extends Command[Unit](
     request(
       "POST",
       "/oauth/revoke",
@@ -500,7 +497,7 @@ object OAuthCommand {
         ("client_id"    , client_id.toString),
         ("client_secret", client_secret.toString),
         ("token"        , token)
-      ) |+| accessToken.config
+      ) 
     )
   )
 }

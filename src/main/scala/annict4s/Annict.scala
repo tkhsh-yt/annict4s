@@ -37,13 +37,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     sort_id             : String = "desc",
     sort_season         : String = "desc",
     sort_watchers_count : String = "desc"
-  ): Authorized[G[Works]] =
-    Reader { token =>
-      f(Command.Works(
-          fields, filter_ids, filter_season, filter_title,
-          page, per_page, sort_id, sort_season, sort_watchers_count
-        )(token))
-    }
+  ): G[Works] =
+    f(Command.Works(
+        fields, filter_ids, filter_season, filter_title,
+        page, per_page, sort_id, sort_season, sort_watchers_count
+      ))
 
   def episodes(
     fields          : List[String] = Nil,
@@ -53,13 +51,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_sort_number: String = "desc"
-  ): Authorized[G[Episodes]] =
-    Reader {token =>
-      f(Command.Episodes(
-          fields, filter_ids, filter_work_id, page,
-          per_page, sort_id, sort_sort_number
-        )(token))
-    }
+  ): G[Episodes] =
+    f(Command.Episodes(
+        fields, filter_ids, filter_work_id, page,
+        per_page, sort_id, sort_sort_number
+      ))
 
   def records(
     fields                    : List[String] = Nil,
@@ -70,14 +66,12 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     per_page                  : Int = 25,
     sort_id                   : String = "desc",
     sort_likes_count          : String = "desc"
-  ): Authorized[G[Records]] =
-    Reader { token => 
-      f(Command.Records(
-          fields, filter_ids, filter_episode_id,
-          filter_has_record_comment, page, per_page,
-          sort_id, sort_likes_count
-        )(token))
-    }
+  ): G[Records] =
+    f(Command.Records(
+        fields, filter_ids, filter_episode_id,
+        filter_has_record_comment, page, per_page,
+        sort_id, sort_likes_count
+      ))
 
   def reviews(
     fields          : List[String] = Nil,
@@ -87,13 +81,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     per_page        : Int = 25,
     sort_id         : String = "desc",
     sort_likes_count: String = "desc"
-  ): Authorized[G[Reviews]] =
-    Reader { token =>
-      f(Command.Reviews(
-          fields, filter_ids, filter_work_id,
-          page, per_page, sort_id, sort_likes_count
-        )(token))
-    }
+  ): G[Reviews] =
+    f(Command.Reviews(
+        fields, filter_ids, filter_work_id,
+        page, per_page, sort_id, sort_likes_count
+      ))
 
   def users(
     fields          : List[String] = Nil,
@@ -102,13 +94,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     page            : Int = 1,
     per_page        : Int = 25,
     sort_id         : String = "desc"
-  ): Authorized[G[Users]] =
-    Reader { token =>
-      f(Command.Users(
-          fields, filter_ids, filter_usernames,
-          page, per_page, sort_id
-        )(token))
-    }
+  ): G[Users] =
+    f(Command.Users(
+        fields, filter_ids, filter_usernames,
+        page, per_page, sort_id
+      ))
 
   def following(
     fields         : List[String] = Nil,
@@ -117,13 +107,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  ): Authorized[G[Users]] =
-    Reader { token =>
-      f(Command.Following(
-          fields, filter_id, filter_username,
-          page, per_page, sort_id
-        )(token))
-    }
+  ): G[Users] =
+    f(Command.Following(
+        fields, filter_id, filter_username,
+        page, per_page, sort_id
+      ))
 
   def followers(
     fields         : List[String] = Nil,
@@ -132,13 +120,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  ): Authorized[G[Users]] =
-    Reader { token =>
-      f(Command.Followers(
-          fields, filter_id, filter_username,
-          page, per_page, sort_id
-        )(token))
-    }
+  ): G[Users] =
+    f(Command.Followers(
+        fields, filter_id, filter_username,
+        page, per_page, sort_id
+      ))
 
   def activities(
     fields         : List[String] = Nil,
@@ -147,26 +133,21 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     page           : Int = 1,
     per_page       : Int = 25,
     sort_id        : String = "desc"
-  ): Authorized[G[Activities]] =
-    Reader { token =>
-      f(Command.Activities(
-          fields, filter_user_id, filter_username, page, per_page, sort_id
-        )(token))
-    }
+  ): G[Activities] =
+    f(Command.Activities(
+        fields, filter_user_id, filter_username, page, per_page, sort_id
+      ))
 
   object Me {
-    def profile(): Authorized[G[User]] =
-      Reader { token =>
-        f(SelfCommand.Me(token))
-      }
+
+    def profile(): G[User] =
+      f(SelfCommand.Me())
 
     def status(
       work_id: Long,
       kind   : Status.Kind
-    ): Authorized[G[String]] =
-      Reader { token =>
-        f(SelfCommand.Statuses(work_id, kind)(token))
-      }
+    ): G[String] =
+      f(SelfCommand.Statuses(work_id, kind))
 
     def postRecord(
       episode_id    : Long,
@@ -174,34 +155,27 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       rating_state  : Option[Rating] = None,
       share_twitter : Boolean = false,
       share_facebook: Boolean = false
-    ): Authorized[G[Record]] =
-      Reader { token =>
-        f(SelfCommand.Record(
-            episode_id, comment,
-            rating_state, share_twitter
-          )(token))
-      }
+    ): G[Record] =
+      f(SelfCommand.Record(
+          episode_id, comment,
+          rating_state, share_twitter
+        ))
 
     def updateRecord(
-
       id            : Long,
       comment       : String = "",
       rating_state  : Rating = Rating.NoSelect,
       share_twitter : Boolean,
       share_facebook: Boolean
-    ): Authorized[G[Record]] =
-      Reader { token =>
-        f(SelfCommand.UpdateRecord(
-            id, comment, rating_state, share_twitter, share_facebook
-          )(token))
-      }
+    ): G[Record] =
+      f(SelfCommand.UpdateRecord(
+          id, comment, rating_state, share_twitter, share_facebook
+        ))
 
     def deleteRecord(
       id: Long
-    ): Authorized[G[String]] =
-      Reader { token =>
-        f(SelfCommand.DeleteRecord(id)(token))
-      }
+    ): G[String] =
+      f(SelfCommand.DeleteRecord(id))
 
     def postReview(
       work_id               : Long,
@@ -213,14 +187,12 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       rating_overall_state  : Rating = Rating.NoSelect,
       share_twitter         : Boolean = false,
       share_facebook        : Boolean = false
-    ): Authorized[G[Review]] =
-      Reader { token =>
-        f(SelfCommand.Review(
-            work_id, body, rating_animation_state, rating_music_state,
-            rating_story_state, rating_character_state,
-            rating_overall_state, share_twitter, share_facebook
-          )(token))
-      }
+    ): G[Review] =
+      f(SelfCommand.Review(
+          work_id, body, rating_animation_state, rating_music_state,
+          rating_story_state, rating_character_state,
+          rating_overall_state, share_twitter, share_facebook
+        ))
 
     def updateReview(
       id                    : Long,
@@ -233,21 +205,17 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       rating_overall_state  : Rating = Rating.NoSelect,
       share_twitter         : Boolean = false,
       share_facebook        : Boolean = false
-    ): Authorized[G[Review]] =
-      Reader { token =>
-        f(SelfCommand.UpdateReview(
-            id, title, body, rating_animation_state, rating_music_state,
-            rating_story_state, rating_character_state,
-            rating_overall_state, share_twitter, share_facebook
-          )(token))
-      }
+    ): G[Review] =
+      f(SelfCommand.UpdateReview(
+          id, title, body, rating_animation_state, rating_music_state,
+          rating_story_state, rating_character_state,
+          rating_overall_state, share_twitter, share_facebook
+        ))
 
     def deleteReview(
       id: Long
-    ): Authorized[G[String]] =
-      Reader { token =>
-        f(SelfCommand.DeleteReview(id)(token))
-      }
+    ): G[String] =
+      f(SelfCommand.DeleteReview(id))
 
     def works(
       fields             : List[String] = Nil,
@@ -260,13 +228,12 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       sort_id            : String = "desc",
       sort_season        : String = "desc",
       sort_watchers_count: String = "desc"
-    ): Authorized[G[Works]] =
-      Reader { token =>
-        f(SelfCommand.Works(
-            fields, filter_ids, filter_season, filter_title,
-            filter_status, page, per_page, sort_id,
-            sort_season, sort_watchers_count
-          )(token))
+    ): G[Works] =
+      f(SelfCommand.Works(
+          fields, filter_ids, filter_season, filter_title,
+          filter_status, page, per_page, sort_id,
+          sort_season, sort_watchers_count
+        ))
       }
 
     def programs(
@@ -282,15 +249,13 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       per_page            : Int = 25,
       sort_id             : String = "desc",
       sort_started_at     : String = "desc"
-    ): Authorized[G[Programs]] =
-      Reader { token =>
-        f(SelfCommand.Programs(
-            fields, filter_ids, filter_channel_ids, filter_work_ids,
-            filter_started_at_gt, filter_started_at_lt,
-            filter_unwatched, filter_rebroadcast, page,
-            per_page, sort_id, sort_started_at
-          )(token))
-      }
+    ): G[Programs] =
+      f(SelfCommand.Programs(
+          fields, filter_ids, filter_channel_ids, filter_work_ids,
+          filter_started_at_gt, filter_started_at_lt,
+          filter_unwatched, filter_rebroadcast, page,
+          per_page, sort_id, sort_started_at
+        ))
 
     def followingActivites(
       fields        : List[String] = Nil,
@@ -299,14 +264,11 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
       page          : Int = 1,
       per_page      : Int = 25,
       sort_id       : String = "desc"
-    ): Authorized[G[Activities]] =
-      Reader { token =>
-        f(SelfCommand.FollowingActivities(
-            fields, filter_actions, filter_muted,
-            page, per_page, sort_id
-          )(token))
-      }
-  }
+    ): G[Activities] =
+      f(SelfCommand.FollowingActivities(
+          fields, filter_actions, filter_muted,
+          page, per_page, sort_id
+        ))
 
   object OAuth {
 
@@ -320,18 +282,14 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
           client_id, client_secret, redirect_url, code
         ))
 
-    def info(): Authorized[G[TokenInfo]] =
-      Reader { token =>  f(OAuthCommand.Info()(token)) }
+    def info(): G[TokenInfo] =
+      f(OAuthCommand.Info())
 
     def revoke(
       client_id    : String,
       client_secret: String,
       token        : String
-    ): Authorized[G[Unit]] =
-      Reader { accessToken =>
-        f(OAuthCommand.Revoke(
-            client_id, client_secret, token
-          )(accessToken))
-      }
+    ): G[Unit] =
+      f(OAuthCommand.Revoke(client_id, client_secret, token))
   }
 }
