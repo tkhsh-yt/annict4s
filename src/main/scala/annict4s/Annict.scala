@@ -140,10 +140,10 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
 
   object Me {
 
-    def profile(): G[User] =
+    def apply(): G[User] =
       f(SelfCommand.Me())
 
-    def status(
+    def statuses(
       work_id: Long,
       kind   : Status.Kind
     ): G[String] =
