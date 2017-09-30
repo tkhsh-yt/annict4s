@@ -275,19 +275,19 @@ sealed abstract class Annict[F[_], G[_]](implicit I: Inject[Command, F]) {
     def authorize(
       client_id    : String,
       response_type: String = "code",
-      redirect_url : String = "urn:ietf:wg:oauth:2.0:oob",
+      redirect_uri : String = "urn:ietf:wg:oauth:2.0:oob",
       scope        : String = "read+write"
     ): String =
-      s"https://annict.jp/oauth/authorize?client_id=${client_id}&response_type=${response_type}&redirect_uri=${redirect_url}&scope=${scope}"
+      s"https://annict.jp/oauth/authorize?client_id=${client_id}&response_type=${response_type}&redirect_uri=${redirect_uri}&scope=${scope}"
 
     def token(
       client_id    : String,
       client_secret: String,
-      redirect_url : String,
+      redirect_uri : String = "urn:ietf:wg:oauth:2.0:oob",
       code         : String
     ): G[AccessToken] =
       f(OAuthCommand.Token(
-          client_id, client_secret, redirect_url, code
+          client_id, client_secret, redirect_uri, code
         ))
 
     def info(): G[TokenInfo] =

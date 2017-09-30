@@ -462,7 +462,7 @@ object OAuthCommand {
   case class Token(
     client_id    : String,
     client_secret: String,
-    redirect_url : String,
+    redirect_uri : String,
     code         : String
   ) extends Command[annict4s.AccessToken](
     request(
@@ -472,7 +472,7 @@ object OAuthCommand {
         ("client_id"    , client_id),
         ("client_secret", client_secret),
         ("grant_type"   , "authorization_code"),
-        ("redirect_url" , redirect_url),
+        ("redirect_uri" , redirect_uri),
         ("code"         , code)
       )
     )
