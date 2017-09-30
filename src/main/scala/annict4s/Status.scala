@@ -1,7 +1,7 @@
 package annict4s
 
 case class Status(
-  kind: Status.Kind
+  kind: Option[Status.Kind]
 )
 
 object Status {
