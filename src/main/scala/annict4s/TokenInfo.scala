@@ -23,7 +23,7 @@ object TokenInfo {
 
   implicit val tokenInfoCodecJson: CodecJson[TokenInfo] =
     CodecJson.casecodec5(apply, unapply)(
-      "resource_owner", "scopes", "expires_in_seconds",
+      "resource_owner_id", "scopes", "expires_in_seconds",
       "application", "created_at"
     )
 }
