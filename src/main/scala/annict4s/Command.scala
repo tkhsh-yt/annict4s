@@ -388,12 +388,13 @@ object SelfCommand {
         ("filter_ids"         , filter_ids.mkString(",")),
         ("filter_season"      , filter_season),
         ("filter_title"       , filter_title),
-        ("filter_status"      , (filter_status == Status.NoSelect) ?? filter_status.toString),
         ("page"               , page.toString),
         ("per_page"           , per_page.toString),
         ("sort_id"            , sort_id),
         ("sort_season"        , sort_season),
         ("sort_watchers_count", sort_watchers_count)
+      ) |+| (filter_status == Status.NoSelect) ?? Request.params(
+        ("filter_status"      , filter_status.toString)
       )
     )
   )

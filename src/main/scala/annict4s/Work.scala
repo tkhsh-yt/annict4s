@@ -50,7 +50,7 @@ object Work {
     case class Facebook(
       og_image_url: String
     )
-    
+
     object Twitter {
 
       implicit val twitterCodecJson: CodecJson[Twitter] =
